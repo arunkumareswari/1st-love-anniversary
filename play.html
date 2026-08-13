@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Story — Memory Discovery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./play.css" />
+</head>
+<body>
+
+  <!-- Backgrounds -->
+  <div class="bg-sky"></div>
+  <div class="bg-glow"></div>
+  <div id="flash" class="flash"></div>
+
+  <!-- Top Right: Love Meter Hearts -->
+  <div class="love-meter-widget" id="loveMeterWidget">
+    <span class="widget-label">Love Meter 💕</span>
+    <div class="hearts-container">
+      <span class="meter-heart" id="heart1" title="Image Memory">🤍</span>
+      <span class="meter-heart" id="heart2" title="Video Memory">🤍</span>
+      <span class="meter-heart" id="heart3" title="Envelope Memory">🤍</span>
+    </div>
+  </div>
+
+  <!-- Surprise Card (right side, face-down, hidden until all 3 found) -->
+  <button class="unlocked-surprise-btn" id="unlockedSurpriseBtn" type="button" aria-label="Open Surprise">
+    <div class="surprise-card-glow"></div>
+    <div class="rummy-surprise-card">
+      <!-- Face-down flip container -->
+      <div class="rummy-card-flip-inner" id="rummyCardFlipInner">
+        <div class="rummy-card-face rummy-card-back">
+          <img src="/images/card_back.png" alt="Surprise Card Back" class="rummy-card-img" />
+        </div>
+        <div class="rummy-card-face rummy-card-front">
+          <img src="/images/card_surprise.png" alt="Surprise Card Front" class="rummy-card-img" />
+        </div>
+      </div>
+    </div>
+    <div class="card-unlocked-badge">✨ Tap to Open</div>
+  </button>
+
+  <!-- ══ PREMIUM SURPRISE SEQUENCE OVERLAY ══ -->
+  <!-- 1. Romantic backdrop -->
+  <div id="surpriseBackdrop" class="surprise-backdrop"></div>
+
+  <!-- 2. Floating hearts canvas -->
+  <canvas id="heartsCanvas" class="hearts-canvas"></canvas>
+
+  <!-- 3. Animated clone card (flies to center & flips) -->
+  <div id="surpriseCardClone" class="surprise-card-clone">
+    <div class="surprise-card-clone-inner" id="surpriseCardCloneInner">
+      <div class="surprise-clone-back">
+        <img src="/images/card_back.png" alt="Surprise" class="surprise-clone-img" />
+      </div>
+      <div class="surprise-clone-front">
+        <img src="/images/card_surprise.png" alt="Surprise Open" class="surprise-clone-img" />
+        <div class="surprise-clone-glow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Clean Floating Wish Video Overlay -->
+  <div id="surpriseVideoOverlay" class="surprise-video-overlay">
+    <div class="wish-video-clean-container">
+      <button class="surprise-video-close" id="surpriseVideoClose" aria-label="Close video">&times;</button>
+      <video id="surpriseVideo" class="surprise-fullscreen-video" controls playsinline>
+        <source src="/wish/wish.mp4" type="video/mp4" />
+      </video>
+    </div>
+  </div>
+
+  <!-- Surprise Unlocked Toast -->
+  <div id="surpriseToast" class="surprise-unlocked-toast">
+    &#10024; All 3 memories found! The Surprise Card is now unlocked! &#127881;
+  </div>
+
+
+  <!-- ACT 1: ORBIT SCENE — 7 cards -->
+  <div id="sceneOrbit" class="scene-orbit">
+    <div id="orbitSystem" class="orbit-system">
+
+      <!-- Card 1: Correct (Image) -->
+      <div class="orbit-card" data-index="1" data-type="image" data-correct="true">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_image.png" alt="Image"/><div class="card-label">Photos</div></div>
+        </div>
+      </div>
+
+      <!-- Card 2: Wrong -->
+      <div class="orbit-card" data-index="2" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+      <!-- Card 3: Correct (Video) -->
+      <div class="orbit-card" data-index="3" data-type="video" data-correct="true">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_video.png" alt="Video"/><div class="card-label">Video</div></div>
+        </div>
+      </div>
+
+      <!-- Card 4: Wrong -->
+      <div class="orbit-card" data-index="4" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+      <!-- Card 5: Correct (Envelope) -->
+      <div class="orbit-card" data-index="5" data-type="envelope" data-correct="true">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_envelope.png" alt="Envelope"/><div class="card-label">Letter</div></div>
+        </div>
+      </div>
+
+      <!-- Card 6: Wrong -->
+      <div class="orbit-card" data-index="6" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+      <!-- Card 7: Wrong -->
+      <div class="orbit-card" data-index="7" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+      <!-- Card 8: Wrong -->
+      <div class="orbit-card" data-index="8" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+      <!-- Card 9: Wrong -->
+      <div class="orbit-card" data-index="9" data-type="wrong" data-correct="false">
+        <div class="card-inner">
+          <div class="card-back"><img src="/images/card_back.png" alt="Card Back"/></div>
+          <div class="card-front"><img src="/images/card_wrong.png" alt="Oops"/><div class="card-label">Oops!</div></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Center Bubu-Dudu Image -->
+    <img src="/images/bubu-dudu.png" alt="Bubu and Dudu" class="center-img" />
+  </div>
+
+  <!-- IMAGE PANEL — "Our Memories" Gallery Style -->
+  <div id="panel-image" class="content-panel panel-image-gallery">
+
+    <!-- Back button -->
+    <button class="back-btn" data-panel="image">Back</button>
+
+    <!-- Decorative top bar -->
+    <div class="memories-header">
+      <!-- Left decoration: bubu-dudu -->
+      <img src="/images/bubu-dudu.png" alt="Bubu and Dudu" class="mem-deco mem-deco--left" />
+
+      <!-- Centre title -->
+      <div class="memories-title-block">
+        <div class="memories-heart-top">💙</div>
+        <h2 class="memories-title">Our Memories 💕</h2>
+        <p class="memories-subtitle">A collection of beautiful moments that we will cherish forever.</p>
+      </div>
+
+      <!-- Right decoration: card_image (heart tree style) -->
+      <img src="/images/card_image.png" alt="Memories" class="mem-deco mem-deco--right" />
+    </div>
+
+    <!-- Floating little hearts (CSS-only) -->
+    <div class="mem-floats" aria-hidden="true">
+      <span class="mf mf1">💙</span>
+      <span class="mf mf2">💕</span>
+      <span class="mf mf3">💙</span>
+      <span class="mf mf4">💗</span>
+      <span class="mf mf5">✨</span>
+    </div>
+
+    <!-- Photo grid -->
+    <div class="memories-photo-grid" id="photoGrid">
+      <!-- Populated dynamically by JS from /public/images -->
+    </div>
+
+    <!-- Bottom footer quote -->
+    <div class="memories-footer-quote">
+      <span>💙</span> Every picture holds a thousand words of love. <span>💙</span>
+    </div>
+
+    <!-- Lightbox (scoped inside panel) -->
+    <div id="memLightbox" class="mem-lightbox">
+      <button class="mem-lb-close" id="memLbClose">&times;</button>
+      <img id="memLbImg" src="" alt="Memory" />
+    </div>
+  </div>
+
+  <!-- VIDEO PANEL — "Our Videos" Gallery Style -->
+  <div id="panel-video" class="content-panel panel-video-gallery">
+
+    <!-- Back button -->
+    <button class="back-btn" data-panel="video">Back</button>
+
+    <!-- Decorative top bar -->
+    <div class="videos-header">
+      <!-- Left decoration: bubu-dudu -->
+      <img src="/images/bubu-dudu.png" alt="Bubu and Dudu" class="vid-deco vid-deco--left" />
+
+      <!-- Centre title -->
+      <div class="videos-title-block">
+        <div class="videos-heart-top">💙</div>
+        <h2 class="videos-title">Our Videos 💕</h2>
+        <p class="videos-subtitle">Relive every beautiful moment we've captured together.</p>
+      </div>
+
+      <!-- Right decoration: card_image (heart tree style) -->
+      <img src="/images/card_image.png" alt="Memories Tree" class="vid-deco vid-deco--right" />
+    </div>
+
+    <!-- Floating little hearts (CSS-only) -->
+    <div class="vid-floats" aria-hidden="true">
+      <span class="vf vf1">💙</span>
+      <span class="vf vf2">💕</span>
+      <span class="vf vf3">💙</span>
+      <span class="vf vf4">💗</span>
+      <span class="vf vf5">✨</span>
+    </div>
+
+    <!-- Video Cards Grid -->
+    <div class="videos-card-grid" id="videoList">
+      <!-- Populated dynamically by JS from /public/videos -->
+    </div>
+
+    <!-- Bottom footer quote -->
+    <div class="videos-footer-quote">
+      <span>💙</span> Every video holds a moment we'll cherish forever. <span>💙</span>
+    </div>
+
+    <!-- Lightbox Video Player Modal -->
+    <div id="vidLightbox" class="vid-lightbox">
+      <button class="vid-lb-close" id="vidLbClose">&times;</button>
+      <video id="vidLbPlayer" controls playsinline></video>
+    </div>
+  </div>
+
+  <!-- ENVELOPE PANEL — "Our Letter" Style -->
+  <div id="panel-envelope" class="content-panel panel-envelope-gallery">
+
+    <!-- Back button -->
+    <button class="back-btn" data-panel="envelope">Back</button>
+
+    <!-- Decorative top bar -->
+    <div class="letter-header">
+      <!-- Left decoration: bubu-dudu -->
+      <img src="/images/bubu-dudu.png" alt="Bubu and Dudu" class="let-deco let-deco--left" />
+
+      <!-- Centre title block -->
+      <div class="letter-title-block">
+        <div class="letter-icon-top">💌</div>
+        <h2 class="letter-title">Our Letter 💕</h2>
+        <p class="letter-subtitle">Little words, big feelings.</p>
+      </div>
+
+      <!-- Right decoration: heart tree -->
+      <img src="/images/card_image.png" alt="Memories Tree" class="let-deco let-deco--right" />
+    </div>
+
+    <!-- Floating little hearts -->
+    <div class="let-floats" aria-hidden="true">
+      <span class="lf lf1">💙</span>
+      <span class="lf lf2">💕</span>
+      <span class="lf lf3">💙</span>
+      <span class="lf lf4">💗</span>
+      <span class="lf lf5">✨</span>
+    </div>
+
+    <!-- Main Envelope Scene (Centered Pink Envelope) -->
+    <div class="letter-scene-wrapper">
+      <div class="pink-envelope-container" id="pinkEnvelopeContainer">
+        <img src="/images/envelope.png" alt="Pink Envelope" class="envelope-png-img" />
+        <div class="envelope-tap-badge" id="envelopeTapBadge">
+          ✨ Tap Envelope to Read Letter 💕
+        </div>
+      </div>
+    </div>
+
+    <!-- Centered Letter Modal Overlay (Opens on Click) -->
+    <div id="letterModal" class="letter-modal-overlay">
+      <div class="parchment-letter-paper" id="parchmentLetterPaper">
+        
+        <!-- Action buttons top right -->
+        <div class="letter-paper-actions">
+          <button class="let-action-btn let-heart-btn" id="letHeartBtn" type="button" aria-label="Favorite letter">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#e85b81" stroke-width="2">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+            </svg>
+          </button>
+          <button class="letter-close-btn" id="letterCloseBtn" type="button" aria-label="Close Letter">&times;</button>
+        </div>
+
+        <div class="letter-paper-header">
+          <div class="letter-paper-heart">💖</div>
+          <h3 class="letter-paper-title">A Letter for You</h3>
+        </div>
+
+        <div class="letter-paper-content">
+          <p class="letter-salutation">My Dear Bubu 🥰,</p>
+          <p class="letter-paragraph">
+            One whole year with you… and honestly, I still can't believe how lucky I am. 🥹💗
+          </p>
+
+          <p class="letter-paragraph">
+            From our silly little conversations to the sweetest memories, every moment with you has become something special to me.
+          </p>
+
+          <p class="letter-paragraph">
+            Thank you for being my favorite person, my happy place, and the reason behind so many of my smiles. 🫶🏻
+          </p>
+
+          <p class="letter-paragraph">
+            I hope this is just the beginning of our story, with many more laughs, memories, and beautiful years together. ❤️
+          </p>
+
+          <div class="letter-closing">
+            <span>Happy 1st Anniversary, my love. 🥰</span>
+            <span class="letter-signature">One year down, forever to go. 💕</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- WRONG CARD PANEL -->
+  <div id="panel-wrong" class="content-panel">
+    <button class="back-btn" data-panel="wrong">Try Another Card</button>
+    <div class="wrong-scene">
+      <div class="wrong-card-box" id="wrongBox">
+        <img src="/images/card_wrong.png" alt="Oops Wrong Card" class="wrong-img" />
+        <h2 class="wrong-title">Oops! Wrong Card &#128059;</h2>
+        <p class="wrong-text">
+          This isn't one of the 3 memory cards!<br/>
+          Don't worry, try selecting another card from the orbit.
+        </p>
+        <button class="try-again-btn" id="tryAgainBtn">Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./play.js"></script>
+</body>
+</html>
