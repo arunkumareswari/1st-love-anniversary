@@ -15,5 +15,4 @@ Thumbs.db
 .vercel
 
 # Exclude large video files from Git tracking
-public/videos/
 public/wish/
