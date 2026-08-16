@@ -92,7 +92,6 @@ function buildVideoPanel() {
       <div class="vid-card-info">
         <div class="vid-card-text">
           <h4 class="vid-card-title">${item.title}</h4>
-          <span class="vid-card-date">${item.date}</span>
         </div>
         <button class="vid-heart-btn" type="button" aria-label="Favorite">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#6c8eb5" stroke-width="2" class="heart-svg">
@@ -447,7 +446,6 @@ async function revealImage() {
       <div class="mem-card-info">
         <div class="mem-card-text">
           <h4 class="mem-card-title">${caption}</h4>
-          <span class="mem-card-date">${dateStr}</span>
         </div>
         <button class="mem-heart-btn" type="button" aria-label="Favorite">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#6c8eb5" stroke-width="2" class="heart-svg">
