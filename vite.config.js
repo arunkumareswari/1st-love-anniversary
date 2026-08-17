@@ -42,10 +42,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main:    resolve(__dirname, 'index.html'),
-        memories:resolve(__dirname, 'memories.html'),
-        play:    resolve(__dirname, 'play.html'),
-        gallery: resolve(__dirname, 'gallery.html'),
+        main: resolve(__dirname, 'index.html'),
+        play: resolve(__dirname, 'play.html'),
       },
     },
   },
